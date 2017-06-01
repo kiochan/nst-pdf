@@ -2,7 +2,7 @@
 
 module.exports = (data_as_string, callback) ->
 
-  _data = data_as_string
+  _data = data_as_string.replace /\r\n/g, "\n"
 
   # split data as array
   arr = [String _data]
