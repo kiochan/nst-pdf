@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>CreaNyan 剧本转换器</title>
+    <link rel="stylesheet" href="../font/notosanssc.css">
+    <link rel="stylesheet" href="../font/epson1.css">
+    <link rel="stylesheet" href="../style/main.css">
+  </head>
+  <body>
+    <div id="main">
+      <div id="input">
+        <div id="input-text">
+          请将文件<br />拖入这里
+        </div>
+      </div>
+      <pre id="log">初始化完毕！</div>
+    </div>
+    <script type="text/javascript">
+      var {ipcRenderer} = require('electron');
+      var ipc = ipcRenderer;
+
+      var d_input = document.getElementById("input")
+      var d_log = document.getElementById("log")
+      document.ondragleave = function (e) {
+        e.preventDefault();
+      }
+      document.ondrop = function (e) {
+        e.preventDefault();
+      }
+      document.ondragenter = function (e) {
+        e.preventDefault();
+      }
+      document.ondragover = function (e) {
+        e.preventDefault();
+      }
+
+      var v = require('../script/version.js');
+      d_log.innerHTML = '版本号：' + v + '\n' + d_log.innerHTML;
+
+      d_input.ondragenter = function (e) {
+        e.preventDefault();
+        d_input.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+      }
+      d_input.ondrop = function (e) {
+        e.preventDefault();
+        d_input.style.backgroundColor = 'rgba(255, 255, 255, 0)';
+        var data = e.dataTransfer.files;
+        if (data.length < 1) {
+          return void 0;
+        }
+        for (var i = 0; i < data.length; i++) {
+          ipc.send('input-data', data[i].path);
+        }
+      }
+      ipc.on('ipc-log', function(e, arg) {
+        console.log(arg)
+        d_log.innerHTML = arg + '\n' + d_log.innerHTML;
+      });
+    </script>
+  </body>
+</html>
