@@ -61,7 +61,12 @@ ipc.on "input-data", (event, input) ->
 
       fs.readFile input, (err, data) ->
         event.sender.send "ipc-log", "读取成功！正在转换中。"
-        parser data.toString(), (data, err_msg) ->
+
+        if yes &&
+        data[0].toString(16).toLowerCase() == "ef" && data[1].toString(16).toLowerCase() == "bb" && data[2].toString(16).toLowerCase() == "bf"
+          event.sender.send "发现BOM"
+          data = data.slice(3);
+        parser path.basename(input), data.toString(), (data, err_msg) ->
           if err_msg
             event.sender.send "ipc-log", "输出失败！请关闭已打开的 PDF 文件。"
             return
@@ -70,7 +75,7 @@ ipc.on "input-data", (event, input) ->
             event.sender.send "ipc-log", "创建临时文件： #{tmp_path}"
             try
               markdownpdf
-                cssPath: "../github-markdown-css/github-markdown.css"
+                cssPath: "#{__dirname}/../style/github-markdown.css"
                 highlightCssPath: ""
                 paperFormat: "A4"
               .from tmp_path

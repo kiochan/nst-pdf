@@ -1,6 +1,6 @@
 # parser.coffee
 
-module.exports = (data_as_string, callback) ->
+module.exports = (name, data_as_string, callback) ->
 
   _data = data_as_string.replace /\r\n/g, "\n"
 
@@ -9,14 +9,14 @@ module.exports = (data_as_string, callback) ->
   data = arr.concat (_data.split "\n")
 
   # empty head of table
-  output_data = "__cmd__|__id__|__opt__|__content__\n:-:|:-:|:-:|:-\n"
+  output_data = "# #{name} 剧本\n__cmd__|__id__|__opt__|__content__\n:-:|:-:|:-:|:-\n"
 
   l = 1
 
   lp = ->
     line = data[l]
 
-    if line.match /^#/
+    if line.match /^#.*/
       output_data += "注释|||#{data[l].replace /^#/, ""}\n"
       l += 1
 
@@ -33,6 +33,11 @@ module.exports = (data_as_string, callback) ->
     else if line.match /^@bgm/i
       d = data[l+1]
       output_data += "音乐|||\[#{d}\]\n"
+      l += 2
+
+    else if line.match /^@tag/i
+      d = data[l+1]
+      output_data += "标签|||\[#{d}\]\n"
       l += 2
 
     else if line.match /^@bg/i
