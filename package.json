@@ -12,8 +12,9 @@
   "dependencies": {
     "coffee-script": "^1.12.6",
     "github-markdown-css": "^2.6.0",
-    "markdown-pdf": "^8.0.0",
-    "md5": "^2.2.1"
+    "html-pdf": "^2.1.0",
+    "md5": "^2.2.1",
+    "showdown": "^1.7.1"
   },
   "devDependencies": {
     "electron": "^1.6.10"

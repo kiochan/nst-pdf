@@ -4,13 +4,19 @@ fs = require "fs"
 md5 = require "md5"
 url = require 'url'
 path = require 'path'
-markdownpdf = require "markdown-pdf"
 {app, BrowserWindow, ipcMain} = require "electron"
 ipc = ipcMain
 parser = require "./parser.coffee"
+showdown  = new (require('showdown').Converter)
+pdf = require('html-pdf')
+css = require './css.coffee'
+
+
+# init
+showdown
+.setOption "tables", true
 
 win = null
-
 createWindow = () ->
   win = new BrowserWindow
     useContentSize: yes
@@ -50,49 +56,48 @@ app.on 'activate', () ->
     do createWindow
 
 ipc.on "input-data", (event, input) ->
-  event.sender.send "ipc-log", "正在尝试读取：#{input}"
-  if (String input).match /\.txt$|\.nst$/
-    try
-      fs.stat input, (err, stats) ->
-        if err? || !stats.isFile
-          event.sender.send "ipc-log", "读取成功！正在转换中。"
-        if stats.size > 2 * 1024 * 1024
-          event.sender.send "ipc-log", "文件过大！"
+  event.sender.send "ipc-log", "尝试读取：#{input}"
+  if !(input.match /(\.txt$)|(\.nst$)/)
+    event.sender.send "ipc-log", "非法文件！只接受纯文本文档(.txt .nst)"
+    return
 
-      fs.readFile input, (err, data) ->
-        event.sender.send "ipc-log", "读取成功！正在转换中。"
+  fs.stat input, (err, stats) ->
+    if err? || !stats.isFile
+      event.sender.send "ipc-log", "非法文件！不支持文件夹。"
+      return
+    if stats.size > 2 * 1024 * 1024
+      event.sender.send "ipc-log", "文件过大！"
+      return
 
-        if yes &&
-        data[0].toString(16).toLowerCase() == "ef" && data[1].toString(16).toLowerCase() == "bb" && data[2].toString(16).toLowerCase() == "bf"
-          event.sender.send "ipc-log", "发现BOM"
-          data = data.slice(3);
-        parser path.basename(input), data.toString(), (data, err_msg) ->
-          if err_msg
-            event.sender.send "ipc-log", "输出失败！请关闭已打开的 PDF 文件。"
+    fs.readFile input, (err, data) ->
+      event.sender.send "ipc-log", "读取成功！"
+
+      if yes &&
+      data[0].toString(16).toLowerCase() == "ef" && data[1].toString(16).toLowerCase() == "bb" && data[2].toString(16).toLowerCase() == "bf"
+        event.sender.send "ipc-log", "发现BOM"
+        data = data.slice(3);
+      parser path.basename(input), data.toString(), (md, err_msg) ->
+        event.sender.send "ipc-log", "正在转换！"
+        output = "#{input}.pdf"
+        html = showdown.makeHtml md
+        html = """
+        <!doctype html>
+        <html>
+        <head><style>#{css}</style></head>
+        <body>#{html}</body>
+        </html>
+        """
+        fs.writeFile "#{input}.html", html
+        pdf
+        .create html,
+          format: "A4"
+          border: "0.5in"
+          tables: yes
+        .toFile output, (err, res) ->
+          if err
+            event.sender.send "ipc-log", "输出文件发生错误！"
             return
-          tmp_path = "#{input}._$$#{md5(input)}"
-          fs.writeFile tmp_path, data, (err) ->
-            event.sender.send "ipc-log", "创建临时文件： #{tmp_path}"
-            try
-              cwdp = process.cwd()
-              if !cwdp.match /^\//
-                cwdp = "file:///" + cwdp.replace /\\/g, "/"
-              cwdp += "/style/github-markdown.css"
-              console.log cwdp
-              markdownpdf
-                cssPath: cwdp
-                paperFormat: "A3"
-              .from tmp_path
-              .to "#{input}.pdf", ->
-                event.sender.send "ipc-log", "输出到： #{input}.pdf"
-                fs.unlink tmp_path, ->
-                  event.sender.send "ipc-log", "完成！\n"
-                  return
-                return
-            catch error
-              event.sender.send "ipc-log", "输出失败！请关闭已打开的 PDF 文件。"
-    catch error
-      event.sender.send "ipc-log", "读取失败！"
-  else
-    event.sender.send "ipc-log", "文件类型错误！"
+          event.sender.send "ipc-log", "转换成功！"
+          event.sender.send "ipc-log", "输出到：#{output}"
+
   return
