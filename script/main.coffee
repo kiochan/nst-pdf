@@ -70,8 +70,8 @@ ipc.on "input-data", (event, input) ->
             event.sender.send "ipc-log", "创建临时文件： #{tmp_path}"
             try
               markdownpdf
-                cssPath: "./mdpdf.css"
-                highlightCssPath: "./mdpdf_hl.css"
+                cssPath: "../github-markdown-css/github-markdown.css"
+                highlightCssPath: ""
                 paperFormat: "A4"
               .from tmp_path
               .to "#{input}.pdf", ->
