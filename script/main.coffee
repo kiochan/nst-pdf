@@ -74,8 +74,9 @@ ipc.on "input-data", (event, input) ->
           fs.writeFile tmp_path, data, (err) ->
             event.sender.send "ipc-log", "创建临时文件： #{tmp_path}"
             try
+              console.log process.cwd()
               markdownpdf
-                cssPath: "#{__dirname}/../style/github-markdown.css"
+                cssPath: process.cwd() + "/style/github-markdown.css"
                 highlightCssPath: ""
                 paperFormat: "A4"
               .from tmp_path
