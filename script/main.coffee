@@ -81,7 +81,7 @@ ipc.on "input-data", (event, input) ->
               console.log cwdp
               markdownpdf
                 cssPath: cwdp
-                paperFormat: "A4"
+                paperFormat: "A3"
               .from tmp_path
               .to "#{input}.pdf", ->
                 event.sender.send "ipc-log", "输出到： #{input}.pdf"
