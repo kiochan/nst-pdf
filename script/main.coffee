@@ -74,10 +74,13 @@ ipc.on "input-data", (event, input) ->
           fs.writeFile tmp_path, data, (err) ->
             event.sender.send "ipc-log", "创建临时文件： #{tmp_path}"
             try
-              console.log process.cwd()
+              cwdp = process.cwd()
+              if !cwdp.match /^\//
+                cwdp = "file:///" + cwdp.replace /\\/g, "/"
+                cwdp += "/style/github-markdown.css"
+              console.log cwdp
               markdownpdf
-                cssPath: process.cwd() + "/style/github-markdown.css"
-                highlightCssPath: ""
+                cssPath: cwdp
                 paperFormat: "A4"
               .from tmp_path
               .to "#{input}.pdf", ->

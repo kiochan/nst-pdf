@@ -22,7 +22,7 @@ module.exports = (name, data_as_string, callback) ->
 
     else if line.match /^@cg/i
       d = data[l+1]
-      output_data += "CG|||\[#{d}\]\n"
+      output_data += "CG图|||\[#{d}\]\n"
       l += 2
 
     else if line.match /^@sfx/i
@@ -30,9 +30,30 @@ module.exports = (name, data_as_string, callback) ->
       output_data += "音效|||\[#{d}\]\n"
       l += 2
 
+    else if line.match /^@time/i
+      d = data[l+1]
+      output_data += "显示时间|||\[#{d}\]\n"
+      l += 2
+
+    else if line.match /^@goto/i
+      d = data[l+1]
+      output_data += "显示时间|||\[#{d}\]\n"
+      l += 2
+
+    else if line.match /^@atmos/i
+      d = data[l+1]
+      if d != "null"
+        output_data += "环境音效|||\[#{d}\]\n"
+      else
+        output_data += "音乐|||停止播放\n"
+      l += 2
+
     else if line.match /^@bgm/i
       d = data[l+1]
-      output_data += "音乐|||\[#{d}\]\n"
+      if d != "null"
+        output_data += "音乐|||\[#{d}\]\n"
+      else
+        output_data += "音乐|||停止播放\n"
       l += 2
 
     else if line.match /^@tag/i
@@ -42,7 +63,7 @@ module.exports = (name, data_as_string, callback) ->
 
     else if line.match /^@bg/i
       d = data[l+1]
-      output_data += "背景|||\[#{d}\]\n"
+      output_data += "切换背景|||\[#{d}\]\n"
       l += 2
 
     else if line.match /^@value/i
