@@ -64,7 +64,7 @@ ipc.on "input-data", (event, input) ->
 
         if yes &&
         data[0].toString(16).toLowerCase() == "ef" && data[1].toString(16).toLowerCase() == "bb" && data[2].toString(16).toLowerCase() == "bf"
-          event.sender.send "发现BOM"
+          event.sender.send "ipc-log", "发现BOM"
           data = data.slice(3);
         parser path.basename(input), data.toString(), (data, err_msg) ->
           if err_msg
