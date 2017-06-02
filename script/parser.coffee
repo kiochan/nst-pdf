@@ -40,6 +40,13 @@ module.exports = (data_as_string, callback) ->
       output_data += "背景|||\[#{d}\]\n"
       l += 2
 
+    else if line.match /^@value/i
+      name = data[l+1]
+      option = data[l+1]
+      new_value = data[l+1]
+      output_data += "value|#{name}|#{option}|\[#{new_value}\]\n"
+      l += 4
+
     else if line.match /^[0-9a-z]+$/i
       # 剧本
       id = data[l]
