@@ -76,15 +76,24 @@ ipc.on "input-data", (event, input) ->
       data[0].toString(16).toLowerCase() == "ef" && data[1].toString(16).toLowerCase() == "bb" && data[2].toString(16).toLowerCase() == "bf"
         event.sender.send "ipc-log", "发现BOM"
         data = data.slice(3);
-      parser path.basename(input), data.toString(), (md, err_msg) ->
+      title = path.basename(input)
+      parser title, data.toString(), (md, err_msg) ->
         event.sender.send "ipc-log", "正在转换！"
         output = "#{input}.pdf"
         html = showdown.makeHtml md
         html = """
         <!doctype html>
         <html>
-        <head><style>#{css}</style></head>
-        <body>#{html}</body>
+        <head>
+        <title>#{title}</title>
+        <meta charset="utf-8">
+        <style>
+        #{css}
+        </style>
+        </head>
+        <body>
+        #{html}
+        </body>
         </html>
         """
         fs.writeFile "#{input}.html", html

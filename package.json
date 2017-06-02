@@ -11,6 +11,8 @@
   "license": "MIT",
   "dependencies": {
     "coffee-script": "^1.12.6",
+    "electron": "^1.6.10",
+    "electron-html-to": "^2.5.1",
     "github-markdown-css": "^2.6.0",
     "html-pdf": "^2.1.0",
     "md5": "^2.2.1",
