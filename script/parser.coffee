@@ -54,7 +54,7 @@ module.exports = (data_as_string, callback) ->
 
     else
       if !line.match /^ *$/
-        output_data += "说明|||*#{line}*\n"
+        output_data += "unknow|||*#{line}*\n"
       l += 1
 
     if l < data.length then setTimeout lp, 0 else callback(output_data)
