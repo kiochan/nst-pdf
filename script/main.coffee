@@ -77,7 +77,7 @@ ipc.on "input-data", (event, input) ->
               cwdp = process.cwd()
               if !cwdp.match /^\//
                 cwdp = "file:///" + cwdp.replace /\\/g, "/"
-                cwdp += "/style/github-markdown.css"
+              cwdp += "/style/github-markdown.css"
               console.log cwdp
               markdownpdf
                 cssPath: cwdp
