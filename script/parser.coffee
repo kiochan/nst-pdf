@@ -118,12 +118,15 @@ module.exports = (name, data_as_string, callback) ->
       if l < data.length then setTimeout lp, 0
       else
         output_data += "\n"
+        output_data += "## 需求资源\n"
         for key, cmd of ct
+          do cmd.sort
           output_data += "* #{key}\n"
           for c in cmd
             output_data += "    * #{c}\n"
           output_data += "\n"
         output_data += "\n"
+        output_data += "## 台本\n"
         output_data += output_data_tabel
         callback output_data
 
