@@ -99,6 +99,9 @@ module.exports = (name, data_as_string, callback) ->
         id = data[l]
         l += 1
         name = data[l]
+        if !name? || name.length == 0
+          name = "[EMPTY]"
+          output_data += "`empty name at line [#{l}]`\n\n"
         l += 1
         text = ""
         while data[l] != ""
