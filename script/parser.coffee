@@ -112,7 +112,7 @@ module.exports = (name, data_as_string, callback) ->
       else
         if !line.match /^ *$/
           output_data_tabel += "|unknow|||*#{line}*|\n"
-          output_data += "**unknow script at line [#{l}]**\n"
+          output_data += "`unknow script at line [#{l}]`\n\n"
         l += 1
 
       if l < data.length then setTimeout lp, 0
