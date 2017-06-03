@@ -96,7 +96,8 @@ ipc.on "input-data", (event, input) ->
         </body>
         </html>
         """
-        fs.writeFile "#{input}.html", html
+        # fs.writeFile "#{input}.html", html
+
         pdf
         .create html,
           format: "A4"
