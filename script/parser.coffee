@@ -102,15 +102,20 @@ module.exports = (name, data_as_string, callback) ->
         if !name? || name.length == 0
           name = "[EMPTY]"
           output_data += "`empty name at line [#{l}]`\n\n"
-        l += 1
-        text = ""
-        while data[l] != ""
-          text += data[l]
+        else
           l += 1
-        if !ct["角色"]? then ct["角色"] = []
-        if ct["角色"].indexOf(name) < 0
-          ct["角色"].push name
-        output_data_tabel += "|台词|`#{id}`|**#{name}**|**#{text}**|\n"
+          text = ""
+          if data[l].length == 0
+            l += 1
+            output_data += "`bad dialog at line [#{l}]`\n\n"
+          else
+            while data[l] != ""
+              text += data[l]
+              l += 1
+            if !ct["角色"]? then ct["角色"] = []
+            if ct["角色"].indexOf(name) < 0
+              ct["角色"].push name
+            output_data_tabel += "|台词|`#{id}`|**#{name}**|**#{text}**|\n"
 
       else
         if !line.match /^ *$/
