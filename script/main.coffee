@@ -48,12 +48,14 @@ createWindow = () ->
 app.on 'ready', createWindow
 
 app.on 'window-all-closed', () ->
-  if process.platform != 'darwin'
-    do app.quit
+  # if process.platform != 'darwin'
+  do app.quit
 
+###
 app.on 'activate', () ->
   if win == null
     do createWindow
+###
 
 ipc.on "input-data", (event, input) ->
   event.sender.send "ipc-log", "尝试读取：#{input}"
