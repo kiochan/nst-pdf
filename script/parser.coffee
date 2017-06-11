@@ -29,16 +29,20 @@ module.exports = (name, data_as_string, callback) ->
       else if line.match /^@cg/i
         d = data[l+1]
         if !ct["CG"]? then ct["CG"] = []
-        if ct["CG"].indexOf(d) < 0
-          ct["CG"].push d
+        if !ct["CG"][d]?
+          ct["CG"][d] = 1
+        else
+          ct["CG"][d]++
         output_data_tabel += "|CG|||\[#{d}\]|\n"
         l += 2
 
       else if line.match /^@sfx/i
         d = data[l+1]
         if !ct["音效"]? then ct["音效"] = []
-        if ct["音效"].indexOf(d) < 0
-          ct["音效"].push d
+        if !ct["音效"][d]?
+          ct["音效"][d] = 1
+        else
+          ct["音效"][d]++
         output_data_tabel += "|音效|||\[#{d}\]|\n"
         l += 2
 
@@ -56,8 +60,10 @@ module.exports = (name, data_as_string, callback) ->
         d = data[l+1]
         if d != "null"
           if !ct["环境音"]? then ct["环境音"] = []
-          if ct["环境音"].indexOf(d) < 0
-            ct["环境音"].push d
+          if !ct["环境音"][d]?
+            ct["环境音"][d] = 1
+          else
+            ct["环境音"][d]++
           output_data_tabel += "|环境音|||\[#{d}\]|\n"
         else
           output_data_tabel += "|音乐|||停止播放|\n"
@@ -67,8 +73,10 @@ module.exports = (name, data_as_string, callback) ->
         d = data[l+1]
         if d != "null"
           if !ct["音乐"]? then ct["音乐"] = []
-          if ct["音乐"].indexOf(d) < 0
-            ct["音乐"].push d
+          if !ct["音乐"][d]?
+            ct["音乐"][d] = 1
+          else
+            ct["音乐"][d]++
           output_data_tabel += "|音乐|||\[#{d}\]|\n"
         else
           output_data_tabel += "|音乐|||停止播放|\n"
@@ -82,8 +90,10 @@ module.exports = (name, data_as_string, callback) ->
       else if line.match /^@bg/i
         d = data[l+1]
         if !ct["背景"]? then ct["背景"] = []
-        if ct["背景"].indexOf(d) < 0
-          ct["背景"].push d
+        if !ct["背景"][d]?
+          ct["背景"][d] = 1
+        else
+          ct["背景"][d]++
         output_data_tabel += "|背景|||\[#{d}\]|\n"
         l += 2
 
@@ -112,9 +122,19 @@ module.exports = (name, data_as_string, callback) ->
             while data[l] != ""
               text += data[l]
               l += 1
-            if !ct["角色"]? then ct["角色"] = []
-            if ct["角色"].indexOf(name) < 0
-              ct["角色"].push name
+
+            if !ct["角色（按照字数）"]? then ct["角色（按照字数）"] = []
+            if !ct["角色（按照字数）"][name]?
+              ct["角色（按照字数）"][name] = text.length
+            else
+              ct["角色（按照字数）"][name] += text.length
+
+            if !ct["角色（按照句子）"]? then ct["角色（按照句子）"] = []
+            if !ct["角色（按照句子）"][name]?
+              ct["角色（按照句子）"][name] = 1
+            else
+              ct["角色（按照句子）"][name] += 1
+
             output_data_tabel += "|台词|`#{id}`|**#{name}**|**#{text}**|\n"
 
       else
@@ -128,10 +148,9 @@ module.exports = (name, data_as_string, callback) ->
         output_data += "\n"
         output_data += "## 需求资源\n"
         for key, cmd of ct
-          do cmd.sort
           output_data += "* #{key}\n"
-          for c in cmd
-            output_data += "    * #{c}\n"
+          for k, c of cmd
+            output_data += "    * #{k}: #{c}\n"
           output_data += "\n"
         output_data += "\n"
         output_data += "## 台本\n"
