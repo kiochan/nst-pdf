@@ -107,7 +107,7 @@ ipc.on "input-data", (event, input) ->
           tables: yes
         .toFile output, (err, res) ->
           if err
-            event.sender.send "ipc-log", "输出文件发生错误！"
+            event.sender.send "ipc-log", "输出文件发生错误！#{err.toString()}"
             return
           event.sender.send "ipc-log", "转换成功！"
           event.sender.send "ipc-log", "输出到：#{output}"
