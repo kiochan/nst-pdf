@@ -11,7 +11,7 @@
   "license": "MIT",
   "dependencies": {
     "coffee-script": "^1.12.6",
-    "electron": "^1.6.10",
+    "electron": "^9.1.0",
     "electron-html-to": "^2.5.1",
     "github-markdown-css": "^2.6.0",
     "html-pdf": "^2.1.0",
@@ -19,6 +19,6 @@
     "showdown": "^1.7.1"
   },
   "devDependencies": {
-    "electron": "^1.6.10"
+    "electron": "^9.1.0"
   }
 }
